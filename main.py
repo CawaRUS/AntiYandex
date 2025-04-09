@@ -13,7 +13,7 @@ system_lang = locale.getdefaultlocale()[0]
 language = "ru" if system_lang.startswith("ru") else "en"
 found = False  # поставить true для принудительного удаление ( не пробовать, не работает )
 
-# Переменная для статуса
+
 status_text = ""
 
 def check_registry_for_yandex():
@@ -155,7 +155,7 @@ def uninstall_yandex_browser():
     threading.Thread(target=task, daemon=True).start()
 
 
-# Функция обновления статуса
+
 def update_status(status, color):
     global status_text
     status_text = status
