@@ -4,8 +4,8 @@
 
 Инструкция:
 1. Скачайте последнию версию в GitHub
-2. Open the program
-3. Close the Yandex process in the program (the "Завершить процесс яндекса" button)
+2. Откройте программу
+3. Закрыть процесс яндекса в программе (кнопка «Завершить процесс яндекса»)
 4. Нажать кнопку 'Найти Яндекс Браузер"
 5. Если Яндекс Браузер найден нажмите на "Удалить браузер" ( хочу сразу же отметить что даже если вылезла ошибка то возможно получилось удалить браузер )
 6. После удачного удаление Яндекс Браузера можете спокойно закрывать программу
@@ -20,8 +20,8 @@ I want to immediately note that this is my first utility, so I hope that this pr
 
 Instructions:
 1. Download the latest version in GitHub
-2. Remove the Yandex process using the task manager
-3. Open the program
+2. Open the program
+3. Close the Yandex process in the program (the "Завершить процесс яндекса" button)
 4. Click the button 'Найти Яндекс Браузер"
 5. If Yandex Browser is found, click on "Удалить Яндекс Браузер" (I want to immediately note that even if an error occurs, it is possible to delete the browser)
 6. After successfully deleting Yandex Browser, you can safely close the program
