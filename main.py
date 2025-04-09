@@ -3,10 +3,32 @@ from tkinter import messagebox
 import subprocess
 import os
 import shutil
+import psutil
+import threading
+
 
 found = False  # поставить true для принудительного удаление ( не пробовать, не работает )
 
-import threading
+
+def kill_yandex_processes():
+    killed = False
+    target_processes = ["browser.exe", "yandex.exe"]
+
+    for proc in psutil.process_iter(['pid', 'name']):
+        try:
+            if proc.info['name'] and proc.info['name'].lower() in target_processes:
+                proc.kill()
+                killed = True
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            continue
+
+    if killed:
+        messagebox.showinfo("Успех", "Процессы Яндекс Браузера завершены.")
+        status_label.config(text="Статус: Процессы завершены", fg="green")
+    else:
+        messagebox.showwarning("Не найдено", "Процессы Яндекс Браузера не найдены.")
+        status_label.config(text="Статус: Процессов нет", fg="orange")
+
 
 def check_yandex_browser():
     def task():
@@ -37,7 +59,10 @@ def uninstall_yandex_browser():
         messagebox.showwarning("Внимание", "Сначала нужно найти Яндекс Браузер.")
         return
 
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
     def task():
         try:
             username = os.getenv('USERNAME')
@@ -77,5 +102,9 @@ btn_delete.pack(pady=5)
 
 status_label = tk.Label(root, text="Статус: Ожидание", font=("Arial", 11), fg="gray")
 status_label.pack(pady=20)
+
+kill_button = tk.Button(root, text="Завершить процесс яндекса", command=kill_yandex_processes)
+kill_button.pack(pady=5)
+
 
 root.mainloop()
