@@ -40,17 +40,12 @@ def uninstall_yandex_browser():
     
     def task():
         try:
-            # Получаем имя текущего пользователя
             username = os.getenv('USERNAME')
-            # Используем путь, как в большинстве установок
             browser_path = f"C:\\Users\\{username}\\AppData\\Local\\Yandex\\YandexBrowser"
             if not os.path.exists(browser_path):
-                # Пробуем альтернативный путь
                 browser_path = f"C:\\Users\\{username}\\AppData\\Local\\Yandex\\YandexBrowser\\Application"
             
-            # Проверка существует ли папка с браузером
             if os.path.exists(browser_path):
-                # Удаление папки с браузером
                 shutil.rmtree(browser_path)
                 status_label.config(text="Статус: Удалён успешно", fg="green")
                 messagebox.showinfo("Успех", "Яндекс Браузер успешно удалён.")
@@ -63,7 +58,6 @@ def uninstall_yandex_browser():
             status_label.config(text="Статус: Ошибка", fg="red")
             messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
 
-    # Запуск в отдельном потоке, чтобы избежать зависания интерфейса
     threading.Thread(target=task, daemon=True).start()
 
 # GUI
