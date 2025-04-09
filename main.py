@@ -36,9 +36,13 @@ def check_yandex_browser():
         status_label.config(text="Идёт поиск...", fg="blue")
 
         paths = [
-            "C:\\Users\\%username%\\AppData\\Local\\Yandex\\YandexBrowser\\Application",
-            os.path.join(os.getenv("LOCALAPPDATA"), "Yandex", "YandexBrowser", "Application", "browser.exe")
-        ]
+            "C:\\Program Files (x86)\\Yandex\\YandexBrowser\\",
+            "C:\\Program Files\\Yandex\\YandexBrowser\\",
+            os.path.join("C:\\Users", os.getenv('USERNAME'), "AppData", "Local", "Yandex", "YandexBrowser"),
+            os.path.join(os.getenv("LOCALAPPDATA"), "Yandex", "YandexBrowser", "Application", "browser.exe"),
+            os.path.join(os.getenv("USERPROFILE"), "AppData", "Local", "Yandex", "YandexBrowser", "Application", "browser.exe")
+]
+
 
         for path in paths:
             if os.path.exists(path):
@@ -51,7 +55,6 @@ def check_yandex_browser():
 
     threading.Thread(target=task, daemon=True).start()
 
-
 def uninstall_yandex_browser():
     global found
 
@@ -59,25 +62,26 @@ def uninstall_yandex_browser():
         messagebox.showwarning("Внимание", "Сначала нужно найти Яндекс Браузер.")
         return
 
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
     def task():
         try:
-            username = os.getenv('USERNAME')
-            browser_path = f"C:\\Users\\{username}\\AppData\\Local\\Yandex\\YandexBrowser"
-            if not os.path.exists(browser_path):
-                browser_path = f"C:\\Users\\{username}\\AppData\\Local\\Yandex\\YandexBrowser\\Application"
+            paths = [
+                "C:\\Program Files (x86)\\Yandex\\YandexBrowser\\",
+                "C:\\Program Files\\Yandex\\YandexBrowser\\",
+                os.path.join(os.getenv("LOCALAPPDATA"), "Yandex", "YandexBrowser"),
+                os.path.join(os.getenv("USERPROFILE"), "AppData", "Local", "Yandex", "YandexBrowser")
+            ]
             
-            if os.path.exists(browser_path):
-                shutil.rmtree(browser_path)
-                status_label.config(text="Статус: Удалён успешно", fg="green")
-                messagebox.showinfo("Успех", "Яндекс Браузер успешно удалён.")
-                found = False
-            else:
-                status_label.config(text="Статус: Браузер не найден", fg="red")
-                messagebox.showwarning("Не найдено", "Яндекс Браузер не найден.")
+            for path in paths:
+                if os.path.exists(path):
+                    shutil.rmtree(path)
+                    status_label.config(text="Статус: Удалён успешно", fg="green")
+                    messagebox.showinfo("Успех", "Яндекс Браузер успешно удалён.")
+                    found = False
+                    return  
+
+            
+            status_label.config(text="Статус: Браузер не найден", fg="red")
+            messagebox.showwarning("Не найдено", "Яндекс Браузер не найден.")
 
         except Exception as e:
             status_label.config(text="Статус: Ошибка", fg="red")
