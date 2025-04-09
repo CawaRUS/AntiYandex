@@ -23,7 +23,7 @@ Instructions:
 2. Remove the Yandex process using the task manager
 3. Open the program
 4. Click the button 'Найти Яндекс Браузер"
-5. If Yandex Browser, click on "Удалить Яндекс Браузер" (I want to immediately note that even if an error popped up, it is possible to delete the browser)
+5. If Yandex Browser is found, click on "Удалить Яндекс Браузер" (I want to immediately note that even if an error occurs, it is possible to delete the browser)
 6. After successfully deleting Yandex Browser, you can safely close the program
 
 If you notice an error or would like to help with the program, you can write about it either in GitHub or to my email vos80584@gmail.com
