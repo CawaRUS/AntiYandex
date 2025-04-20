@@ -2,6 +2,8 @@
 
 Хочу сразу же отметить что это моя первая утилита, так что надеюсь что это программа будет вам полезна
 
+![image](https://github.com/user-attachments/assets/460f3a82-6694-4a5a-99dc-bdfeea7b6158)
+
 Инструкция:
 1. Скачайте последнию версию в GitHub
 2. Откройте программу
@@ -18,6 +20,9 @@
 [EN]
 
 I want to immediately note that this is my first utility, so I hope that this program will be useful to you
+
+![image](https://github.com/user-attachments/assets/1a3d1046-2ab8-4956-a1d5-e8fadaf4489e)
+
 
 Instructions:
 1. Download the latest version in GitHub
