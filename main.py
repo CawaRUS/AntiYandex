@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox
-import subprocess
 import os
 import shutil
 import psutil
@@ -11,12 +10,11 @@ import locale
 language = "ru"
 system_lang = locale.getdefaultlocale()[0]
 language = "ru" if system_lang.startswith("ru") else "en"
-found = False  # поставить true для принудительного удаление ( не пробовать, не работает )
-
-
+found = False
 status_text = ""
 
 def check_registry_for_yandex():
+    found_in_registry = False
     try:
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall") as key:
             for i in range(0, winreg.QueryInfoKey(key)[0]):
@@ -25,12 +23,19 @@ def check_registry_for_yandex():
                     try:
                         display_name = winreg.QueryValueEx(subkey, "DisplayName")[0]
                         if "Яндекс" in display_name or "Yandex" in display_name:
-                            return True
+                            found_in_registry = True
+                            break
                     except FileNotFoundError:
                         continue
     except Exception as e:
         print("Ошибка при доступе к реестру:", e)
-    return False
+
+    if found_in_registry:
+        update_status("Найден в реестре" if language == "ru" else "Found in registry", "green")
+        messagebox.showinfo(t("title"), "Яндекс найден в реестре." if language == "ru" else "Yandex found in registry.")
+    else:
+        update_status("В реестре не найден" if language == "ru" else "Not found in registry", "red")
+        messagebox.showwarning(t("title"), "Не найден в реестре." if language == "ru" else "Not found in registry.")
 
 def t(key):
     translations = {
@@ -73,7 +78,6 @@ def t(key):
     }
     return translations[language].get(key, key)
 
-
 def kill_yandex_processes():
     killed = False
     target_processes = ["browser.exe", "yandex.exe"]
@@ -87,12 +91,11 @@ def kill_yandex_processes():
             continue
 
     if killed:
-        messagebox.showinfo("Успех", "Процессы Яндекс Браузера завершены.")
+        messagebox.showinfo(t("title"), t("success_kill"))
         update_status(t("status_killed"), "green")
     else:
-        messagebox.showwarning("Не найдено", "Процессы Яндекс Браузера не найдены.")
+        messagebox.showwarning(t("title"), t("not_found_warning"))
         update_status(t("status_no_proc"), "orange")
-
 
 def check_yandex_browser():
     def task():
@@ -105,7 +108,6 @@ def check_yandex_browser():
             os.path.join("C:\\Users", os.getenv('USERNAME'), "AppData", "Local", "Yandex", "YandexBrowser"),
             os.path.join(os.getenv("LOCALAPPDATA"), "Yandex", "YandexBrowser", "Application", "browser.exe"),
             os.path.join(os.getenv("USERPROFILE"), "AppData", "Local", "Yandex", "YandexBrowser", "Application", "browser.exe"),
-            os.path.join(os.getenv("LOCALAPPDATA"), "Yandex", "YandexBrowser", "Application", "browser.exe"),
             os.path.join(os.getenv("LOCALAPPDATA"), "Yandex", "YandexBrowser", "Application", "service_update.exe")
         ]
 
@@ -122,12 +124,12 @@ def check_yandex_browser():
 
 def uninstall_yandex_browser():
     global found
-
     if not found:
-        messagebox.showwarning("Внимание", "Сначала нужно найти Яндекс Браузер.")
+        messagebox.showwarning(t("title"), t("delete_first"))
         return
 
     def task():
+        global found
         try:
             paths = [
                 "C:\\Program Files (x86)\\Yandex\\YandexBrowser\\",
@@ -135,26 +137,22 @@ def uninstall_yandex_browser():
                 os.path.join(os.getenv("LOCALAPPDATA"), "Yandex", "YandexBrowser"),
                 os.path.join(os.getenv("USERPROFILE"), "AppData", "Local", "Yandex", "YandexBrowser")
             ]
-            
+
             for path in paths:
                 if os.path.exists(path):
-                    shutil.rmtree(path)
-                    update_status(t("delete_success"), "green")
-                    messagebox.showinfo("Успех", "Яндекс Браузер успешно удалён.")
-                    global found
+                    shutil.rmtree(path, ignore_errors=True)
                     found = False
-                    return  
+                    update_status(t("delete_success"), "green")
+                    messagebox.showinfo(t("title"), t("delete_success"))
+                    return
 
             update_status(t("delete_fail"), "red")
-            messagebox.showwarning("Не найдено", "Яндекс Браузер не найден.")
-
+            messagebox.showwarning(t("title"), t("delete_fail"))
         except Exception as e:
             update_status(t("delete_fail"), "red")
-            messagebox.showerror("Ошибка", f"Произошла ошибка: {e}")
+            messagebox.showerror(t("title"), f"{t('delete_fail')}\n{e}")
 
     threading.Thread(target=task, daemon=True).start()
-
-
 
 def update_status(status, color):
     global status_text
@@ -167,23 +165,22 @@ root.title("АнтиЯндекс")
 root.geometry("500x300")
 root.resizable(False, False)
 
-label = tk.Label(root, text="Удаление Яндекс Браузера", font=("Arial", 14))
+label = tk.Label(root, text=t("title"), font=("Arial", 14))
 label.pack(pady=15)
 
-btn_check = tk.Button(root, text="Поиск Яндекс Браузера", font=("Arial", 12), command=check_yandex_browser)
+btn_check = tk.Button(root, text=t("search_btn"), font=("Arial", 12), command=check_yandex_browser)
 btn_check.pack(pady=5)
 
-btn_delete = tk.Button(root, text="Удалить Яндекс Браузер", font=("Arial", 12), bg="red", fg="white", command=uninstall_yandex_browser)
+btn_delete = tk.Button(root, text=t("delete_btn"), font=("Arial", 12), bg="red", fg="white", command=uninstall_yandex_browser)
 btn_delete.pack(pady=5)
 
-status_label = tk.Label(root, text="Статус: Ожидание", font=("Arial", 11), fg="gray")
+status_label = tk.Label(root, text=t("status_wait"), font=("Arial", 11), fg="blue")
 status_label.pack(pady=20)
-status_label.config(text=t("status_wait"), fg="blue")
 
-kill_button = tk.Button(root, text="Завершить процесс яндекса", command=kill_yandex_processes)
+kill_button = tk.Button(root, text=t("kill_btn"), command=kill_yandex_processes)
 kill_button.pack(pady=5)
 
-btn_check_registry = tk.Button(root, text="Проверить реестр", command=check_registry_for_yandex)
+btn_check_registry = tk.Button(root, text=t("registry_check_btn"), command=check_registry_for_yandex)
 btn_check_registry.pack(pady=5)
 
 def toggle_language():
@@ -198,8 +195,6 @@ def update_ui_texts():
     btn_delete.config(text=t("delete_btn"))
     kill_button.config(text=t("kill_btn"))
     btn_check_registry.config(text=t("registry_check_btn"))
-
-    # Принудительное обновление текста статуса
     update_status(t("status_wait"), "blue")
 
 lang_button = tk.Button(root, text="EN/RU", command=toggle_language)
